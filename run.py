@@ -10,8 +10,9 @@ import string
 import re
 import numpy as np
 from collections import Counter
+from stop_words import get_stop_words
 
-stop = set(stopwords.words('english'))
+stop = set(get_stop_words('russian'))
 exclude = set(string.punctuation)
 lemma = WordNetLemmatizer()
  
@@ -25,7 +26,7 @@ def clean(doc):
     return y
 
 print("There are 10 sentences of following three classes on which K-NN classification and K-means clustering"\
-         " is performed : \n1. Cricket \n2. Artificial Intelligence \n3. Chemistry")
+         " is performed : \n1. Математика \n2. Политика \n3. Реклама")
 path = "Sentences.txt"
  
 train_clean_sentences = []
@@ -36,7 +37,7 @@ for line in fp:
     cleaned = ' '.join(cleaned)
     train_clean_sentences.append(cleaned)
  
-vectorizer = TfidfVectorizer(stop_words='english')
+vectorizer = TfidfVectorizer(stop_words=get_stop_words('russian'))
 X = vectorizer.fit_transform(train_clean_sentences)
  
 # Creating true labels for 30 training sentences
@@ -48,9 +49,9 @@ y_train[20:30] = 2
 modelknn = KNeighborsClassifier(n_neighbors=5)
 modelknn.fit(X,y_train)
 
-test_sentences = ["Chemical compunds are used for preparing bombs based on some reactions",\
-"Cricket is a boring game where the batsman only enjoys the game",\
-"Machine learning is a area of Artificial intelligence"]
+test_sentences = ["изменение мест слагаемых суммы не меняет",\
+"магазин одежды",\
+"президент подал в отставку"]
  
 test_clean_sentence = []
 for test in test_sentences:
@@ -61,7 +62,7 @@ for test in test_sentences:
  
 Test = vectorizer.transform(test_clean_sentence)
  
-true_test_labels = ['Cricket','AI','Chemistry']
+true_test_labels = ['Математика','Политика','Реклама']
 predicted_labels_knn = modelknn.predict(Test)
 
  
